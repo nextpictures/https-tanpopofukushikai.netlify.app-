@@ -1,7 +1,14 @@
 /* お知らせを data/news.js から表示する（管理ページで書いた内容） */
 (function () {
   'use strict';
-  var D = window.TP_NEWS; if (!D || !D.items) return;
+  // いつも最新のお知らせを読み込む（ブラウザに古いデータが残っていても上書きする）
+  function parse(t) { var i = t.indexOf('{', t.indexOf('TP_NEWS')), j = t.lastIndexOf('}'); return JSON.parse(t.slice(i, j + 1)); }
+  var first = window.TP_NEWS;
+  if (first && first.items) render(first);
+  fetch('data/news.js?t=' + Date.now(), { cache: 'no-store' }).then(function (r) { return r.ok ? r.text() : null; })
+    .then(function (t) { if (!t) throw 0; var d = parse(t); if (!first || d.version !== first.version || !first.items) render(d); })
+    .catch(function () { if (!first || !first.items) render({ items: [] }); });
+  function render(D) {
   var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
   var now = Date.now();
   var live = D.items.filter(function (n) {
@@ -38,4 +45,5 @@
       (n.body ? '<div class="nd-body">' + esc(n.body).replace(/\n/g, '<br>') + '</div>' : '') +
       (docs.length ? '<ul class="nd-files">' + docs.map(function (f) { return '<li><a class="btn line" href="' + esc(f.path) + '" target="_blank" rel="noopener">📄 ' + esc(f.name) + ' ↗</a></li>'; }).join('') + '</ul>' : '') + back;
   }
+}
 })();

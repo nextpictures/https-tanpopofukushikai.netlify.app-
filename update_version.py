@@ -18,7 +18,7 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 STATE = os.path.join(ROOT, 'version.json')
 LOG = os.path.join(ROOT, '更新履歴.txt')
 SKIP_DIRS = {'.git', '__pycache__', 'data', 'uploads', 'files'}
-SKIP_FILES = {'version.json', '更新履歴.txt', 'update_version.py', '更新する.bat', '更新する.command', '管理画面の使い方.txt', '管理ページの使い方.txt'}
+SKIP_FILES = {'_headers', 'version.json', '更新履歴.txt', 'update_version.py', '更新する.bat', '更新する.command', '管理画面の使い方.txt', '管理ページの使い方.txt'}
 
 def file_hash(path):
     h = hashlib.md5()
