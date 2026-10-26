@@ -1,12 +1,12 @@
 {
- "version": "1.0.3",
+ "version": "1.0.4",
  "updated": "2026-10-26",
  "files": {
   "about.html": "2895c5f404",
   "adm2.png": "e40c8b8687",
   "admin/admin.css": "d98ddc49c8",
   "admin/admin.js": "d2e0ca4df0",
-  "admin/config.js": "d299883a46",
+  "admin/config.js": "a3025a0c5f",
   "admin/index.html": "a85c0af70a",
   "company.html": "0b0a3d8b26",
   "contact.html": "8b77245b61",

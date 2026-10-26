@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>お知らせ管理｜たんぽぽ福祉会</title>
+<link rel="icon" type="image/png" href="../img/logo/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@500;700&family=Quicksand:wght@500;600;700&display=swap">
+<link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+<!-- パスワード -->
+<main id="lock" class="lock" hidden>
+  <form class="lock-card" id="lockForm" novalidate>
+    <img src="../img/logo/main.png" alt="EnaTanpopo" class="lock-logo">
+    <h1>お知らせ管理</h1>
+    <p>パスワードを入れてください。</p>
+    <label for="lockPw" class="sr">パスワード</label>
+    <input id="lockPw" type="password" autocomplete="current-password" placeholder="パスワード">
+    <p class="err" id="lockErr" role="alert"></p>
+    <button class="btn primary big" type="submit">ひらく</button>
+  </form>
+</main>
+
+<div id="app" hidden>
+  <header class="top">
+    <div class="wrap top-in">
+      <img src="../img/logo/main.png" alt="" class="top-mark">
+      <div class="top-tt"><h1>お知らせ管理</h1><p><span id="siteName"></span>　<b id="verLine" class="ver"></b></p></div>
+      <div class="top-acts">
+        <button class="btn line" id="republishBtn" type="button">もう一度反映する</button>
+        <button class="btn line" id="exportBtn" type="button">ファイルで書き出す</button>
+        <a class="btn line" href="../index.html" target="_blank" rel="noopener">サイトを見る</a>
+        <button class="btn line" id="settingsBtn" type="button">設定</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="hello">
+      <span class="sun" aria-hidden="true">☀︎</span>
+      <div>
+        <h2>こんにちは。お知らせを更新しましょう。</h2>
+        <p>①「新しいお知らせを書く」に入力して<b>「公開する」を押すと、そのままホームページに出ます</b>（写真・PDFも一緒に）。②「登録したお知らせ」で直す・消すと、それもすぐホームページに反映されます。</p>
+      </div>
+    </section>
+    <div class="warn" id="connWarn" hidden></div>
+
+    <div class="two">
+      <!-- 1 書く -->
+      <section class="panel" id="formPanel">
+        <h2 class="ph"><span class="no">1</span><span id="formTitle">新しいお知らせを書く</span></h2>
+        <form id="newsForm" novalidate>
+          <div class="fl"><span class="lb">種類</span><span class="hint">ひとつ選んでください</span></div>
+          <div class="chips" id="typeChips" role="radiogroup" aria-label="種類"></div>
+
+          <div class="g2">
+            <div>
+              <div class="fl"><label class="lb" for="f-date">日付 <span class="req">必須</span></label></div>
+              <input id="f-date" type="date" required>
+              <p class="help">一覧に表示される日付です。</p>
+            </div>
+            <div>
+              <div class="fl"><span class="lb">表示の設定</span></div>
+              <label class="sw"><input type="checkbox" id="f-pin"><span class="sw-ui" aria-hidden="true"></span>いちばん上に固定する</label>
+            </div>
+          </div>
+
+          <div class="fl"><label class="lb" for="f-title">タイトル <span class="req">必須</span></label><span class="hint" id="titleCount">0 / 40文字</span></div>
+          <input id="f-title" maxlength="40" placeholder="例：11月15日（土）施設見学会を開きます">
+          <p class="help">一覧に表示される一文です。短く、何のお知らせか分かるように。</p>
+
+          <div class="fl"><label class="lb" for="f-body">本文</label><span class="hint">改行もそのまま表示されます</span></div>
+          <textarea id="f-body" rows="7" placeholder="日時・場所・申し込み方法などを書いてください。"></textarea>
+
+          <div class="sec-h">配信期間</div>
+          <div class="g2">
+            <div><div class="fl"><label class="lb" for="f-start">配信開始</label><span class="hint">空欄なら すぐに表示</span></div><input id="f-start" type="datetime-local"></div>
+            <div><div class="fl"><label class="lb" for="f-end">配信終了</label><span class="hint">空欄なら ずっと表示</span></div><input id="f-end" type="datetime-local"></div>
+          </div>
+          <div class="quick"><span>終了を開始から：</span><button type="button" data-q="7">1週間</button><button type="button" data-q="14">2週間</button><button type="button" data-q="30">1か月</button><button type="button" data-q="0">終了日なし</button></div>
+          <p class="help" id="periodText"></p>
+
+          <div class="sec-h">添付ファイル（写真・PDF）</div>
+          <label class="drop" id="drop" for="f-files">
+            <input id="f-files" type="file" accept="image/jpeg,image/png,image/webp,application/pdf" multiple>
+            <b>ここをクリックしてファイルを選ぶ（複数OK）</b>
+            <small>JPG・PNG・PDF／5つまで。写真は自動で見やすい大きさに縮小します</small>
+          </label>
+          <ul class="att" id="attList"></ul>
+
+          <p class="err" id="formErr" role="alert"></p>
+          <div class="form-acts">
+            <button type="button" class="btn ghost" id="cancelEdit" hidden>直すのをやめる</button>
+            <span class="sp"></span>
+            <button type="button" class="btn line big" id="draftBtn">下書きで保存</button>
+            <button type="submit" class="btn primary big" id="publishBtn">公開する</button>
+          </div>
+        </form>
+      </section>
+
+      <!-- 2 一覧 -->
+      <section class="panel">
+        <h2 class="ph"><span class="no">2</span>登録したお知らせ</h2>
+        <div class="tabs" id="listTabs" role="tablist">
+          <button data-f="all" class="on">すべて</button><button data-f="live">公開中</button><button data-f="soon">公開予定</button><button data-f="ended">期間終了</button><button data-f="draft">下書き</button>
+        </div>
+        <ul class="nlist" id="newsList"></ul>
+      </section>
+    </div>
+
+    <!-- 3 アクセス -->
+    <section class="panel stats" id="stats">
+      <h2 class="ph"><span class="no">3</span>ホームページのアクセス状況</h2>
+      <p class="lead">見た人の数・地域・ページのヒートマップ・よく見られたページ・どこから来たか・押されたボタンやリンクが分かります。（数字は数分おくれて反映されます）</p>
+      <div class="st-bar">
+        <div class="tabs" id="rangeTabs"><button data-r="today">今日</button><button data-r="7" class="on">7日間</button><button data-r="30">30日間</button><button data-r="90">90日間</button></div>
+        <span class="sp"></span>
+        <span class="live" id="liveNow" hidden></span>
+        <button class="btn primary" type="button" id="heatBtn">ヒートマップを見る</button>
+        <button class="btn line" type="button" id="printBtn">印刷・PDFで保存</button>
+      </div>
+      <div id="statsMsg" class="warn" hidden></div>
+      <div id="statsBody">
+        <div class="kpis">
+          <div class="kpi"><span>見た人</span><b id="k-vis">–</b><small>同じ人は1人と数えます</small></div>
+          <div class="kpi"><span>訪問回数</span><b id="k-visits">–</b><small>ホームページに来た回数</small></div>
+          <div class="kpi"><span>ページ表示回数</span><b id="k-pv">–</b><small>見られたページの合計</small></div>
+          <div class="kpi"><span>平均の滞在時間</span><b id="k-time">–</b><small>1回の訪問で見ていた時間</small></div>
+          <div class="kpi"><span>1ページだけで帰った割合</span><b id="k-bounce">–</b><small>低いほど、ほかのページも見ています</small></div>
+        </div>
+        <div class="box"><h3>日ごとの様子</h3><div class="legend"><span class="lg a">ページ表示回数</span><span class="lg b">訪問回数</span></div><div id="dayChart" class="daychart"></div></div>
+        <div class="box heat-box">
+          <h3>トップページのヒートマップ（どこまで見られたか）</h3>
+          <div class="heat-grid">
+            <div class="phone"><div class="phone-top"><i></i><i></i><i></i></div><ol id="secList"></ol></div>
+            <div>
+              <div class="scale"><span>よく見られている</span><i></i><span>あまり見られていない</span></div>
+              <p>トップページを開いた人のうち、それぞれの場所まで<b>画面を動かして見た人の割合</b>です。赤いほど多く、青いほど少なく見られています（上から順にページの並びと同じ）。</p>
+              <p>大事なお知らせやボタンは、赤〜黄色の場所に置くと見てもらいやすくなります。</p>
+              <button class="btn primary big" type="button" id="heatOnSite">ホームページの上でヒートマップを見る</button>
+            </div>
+          </div>
+        </div>
+        <div class="g3">
+          <div class="box"><h3>どこから見ているか（地域）</h3><div class="tabs sm" id="geoTabs"><button data-g="country">国</button><button data-g="region" class="on">都道府県</button><button data-g="city">市町村</button></div><ul class="rank" id="geoList"></ul><p class="note">※インターネット回線の場所から推定するので、近くの市町村になることがあります。番地や町名までは分かりません。</p></div>
+          <div class="box"><h3>もう一度来た人（リピーター）</h3><div class="rep"><div><span>1人あたりの訪問回数</span><b id="r-per">–</b></div><div><span>2回目以降の訪問</span><b id="r-rep">–</b></div></div><p class="note">※同じパソコン・スマホからまた来た回数です（月が変わると別の人として数えます）。「今日」だと少なく出るので、30日間で見るのがおすすめです。</p></div>
+          <div class="box"><h3>よく見られたページ</h3><ul class="rank" id="pageList"></ul></div>
+          <div class="box"><h3>どこのサイトから来たか</h3><ul class="rank" id="refList"></ul></div>
+          <div class="box"><h3>押されたボタン（電話・見学申込・インスタなど）</h3><ul class="rank" id="btnList"></ul></div>
+          <div class="box"><h3>ホームページ内のリンククリック（どこへ進んだか）</h3><ul class="rank" id="linkList"></ul></div>
+        </div>
+        <div class="box"><h3>来る曜日・時間帯（濃いほど多い）</h3><div class="week-wrap"><table class="week" id="weekTbl"></table></div><p class="note">お知らせやSNSを出すと見てもらいやすい時間の目安になります。</p></div>
+        <div class="g3"><div class="box"><h3>使っている機器</h3><ul class="rank" id="devList"></ul></div></div>
+      </div>
+      <p class="foot-note">もっとくわしく見たいとき：<a id="umamiLink" href="https://cloud.umami.is/" target="_blank" rel="noopener">Umamiの画面を開く</a>（英語の画面です。左下の地球マーク🌐→「日本語」で日本語になります）</p>
+    </section>
+  </main>
+</div>
+
+<!-- 設定 -->
+<dialog id="setDlg" class="dlg">
+  <form method="dialog" id="setForm">
+    <header><h2>設定</h2><button type="button" class="x" data-close aria-label="閉じる">×</button></header>
+    <div class="dlg-body">
+      <h3>① ホームページへの反映（GitHub）</h3>
+      <p class="help">「公開する」でホームページに出すには、GitHub の「アクセス用の鍵（トークン）」が必要です。鍵は<b>このパソコン（ブラウザ）の中にだけ</b>保存されます。</p>
+      <div class="g3s">
+        <div><label class="lb" for="s-owner">GitHubのユーザー名</label><input id="s-owner" placeholder="例：tanpopo-fukushi"></div>
+        <div><label class="lb" for="s-repo">リポジトリ名</label><input id="s-repo" placeholder="例：tanpopo-website"></div>
+        <div><label class="lb" for="s-branch">ブランチ</label><input id="s-branch" placeholder="main"></div>
+      </div>
+      <label class="lb" for="s-token">アクセス用の鍵（トークン）</label>
+      <input id="s-token" type="password" autocomplete="off" placeholder="github_pat_ から始まる文字">
+      <p class="help">作り方：<a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHubのトークン作成画面</a>で「Only select repositories」にこのリポジトリを選び、「Contents」を「Read and write」にして作成します。</p>
+      <div class="row"><button type="button" class="btn line" id="ghTest">つながるか試す</button><span id="ghRes" class="res"></span></div>
+
+      <h3>② アクセス状況（Umami）</h3>
+      <div class="g2">
+        <div><label class="lb" for="s-umode">Umamiの種類</label><select id="s-umode"><option value="cloud">Umami Cloud</option><option value="self">自分のサーバー</option></select></div>
+        <div><label class="lb" for="s-uweb">ウェブサイトID</label><input id="s-uweb" placeholder="xxxxxxxx-xxxx-…"></div>
+      </div>
+      <label class="lb" for="s-uapi">APIのアドレス</label><input id="s-uapi" placeholder="https://api.umami.is/v1">
+      <div id="ukeyWrap"><label class="lb" for="s-ukey">APIキー（Umami Cloud）</label><input id="s-ukey" type="password" autocomplete="off"><p class="help">Umami Cloud の「Settings」→「API keys」で作ります。このパソコンの中にだけ保存されます。</p></div>
+      <div id="uselfWrap" hidden><div class="g2"><div><label class="lb" for="s-uuser">Umamiのユーザー名</label><input id="s-uuser" autocomplete="off"></div><div><label class="lb" for="s-upass">Umamiのパスワード</label><input id="s-upass" type="password" autocomplete="off"></div></div></div>
+      <label class="lb" for="s-udash">Umamiの画面のアドレス</label><input id="s-udash" placeholder="https://cloud.umami.is/">
+      <div class="row"><button type="button" class="btn line" id="umTest">つながるか試す</button><span id="umRes" class="res"></span></div>
+
+      <h3>③ このパソコンの閲覧を数えない</h3>
+      <label class="sw"><input type="checkbox" id="s-notrack"><span class="sw-ui" aria-hidden="true"></span>職員が確認のために見た分を、アクセス状況から外す</label>
+
+      <h3>④ 管理ページのパスワードを変える</h3>
+      <div class="g2"><div><label class="lb" for="s-pw1">新しいパスワード（8文字以上）</label><input id="s-pw1" type="password" autocomplete="new-password"></div><div><label class="lb" for="s-pw2">もう一度</label><input id="s-pw2" type="password" autocomplete="new-password"></div></div>
+      <p class="help">GitHubとつながっていれば、そのまま切り替わります。つながっていないときは、書き出された「config.js」を admin フォルダに上書きしてください。</p>
+      <p class="err" id="setErr" role="alert"></p>
+    </div>
+    <footer><button type="button" class="btn ghost" id="logoutBtn">この画面を閉じる（ロック）</button><span class="sp"></span><button type="button" class="btn ghost" data-close>やめる</button><button type="button" class="btn primary" id="setSave">保存する</button></footer>
+  </form>
+</dialog>
+
+<dialog id="askDlg" class="dlg small">
+  <form method="dialog"><div class="dlg-body"><p id="askMsg"></p></div>
+  <footer><span class="sp"></span><button value="no" class="btn ghost">やめる</button><button value="yes" class="btn danger" id="askYes">削除する</button></footer></form>
+</dialog>
+
+<div class="busy" id="busy" hidden><div><span class="spin"></span><b id="busyMsg">ホームページに反映しています…</b></div></div>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="config.js"></script>
+<script src="../js/site-config.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>
