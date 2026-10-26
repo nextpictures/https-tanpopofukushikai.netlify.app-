@@ -1,5 +1,5 @@
 {
- "version": "1.0.6",
+ "version": "1.0.7",
  "updated": "2026-10-26",
  "files": {
   "about.html": "2895c5f404",
@@ -10,7 +10,7 @@
   "admin/index.html": "a85c0af70a",
   "company.html": "0b0a3d8b26",
   "contact.html": "8b77245b61",
-  "css/style.css": "3e86c89081",
+  "css/style.css": "e78aeaaa61",
   "docs/score_detail.pdf": "0c3dbce0ce",
   "docs/score_total.pdf": "2ae254412d",
   "greeting.html": "bceefdb931",
@@ -95,7 +95,7 @@
   "js/news.js": "1375a6ab07",
   "js/site-config.js": "b47f93be11",
   "news-detail.html": "f3126487f5",
-  "news.html": "5700ccaedb",
+  "news.html": "8a110d23a2",
   "recruit.html": "7d65b4b60a",
   "service.html": "e4c0fe8dd6",
   "shien-system.html": "889ddc16d8",

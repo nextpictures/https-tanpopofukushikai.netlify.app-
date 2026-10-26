@@ -1,3 +1,7 @@
+■ Ver.1.0.7　2026年10月26日
+  変更：css/style.css
+  変更：news.html
+
 ■ Ver.1.0.6　2026年10月26日
   変更：index.html
   変更：js/news.js
