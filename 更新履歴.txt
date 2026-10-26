@@ -1,3 +1,6 @@
+■ Ver.1.0.5　2026年10月26日
+  変更：admin/admin.js
+
 ■ Ver.1.0.4　2026年10月26日
   変更：admin/config.js
 

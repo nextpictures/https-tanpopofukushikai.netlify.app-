@@ -53,7 +53,7 @@ async function ghReq(path, opt = {}) {
     let m = ''; try { m = (await res.json()).message || ''; } catch (e) {}
     if (res.status === 401) throw new Error('GitHubの鍵（トークン）が正しくないか、期限が切れています。「設定」で入れ直してください。');
     if (res.status === 403) throw new Error('GitHubの鍵に「書き込み」の許可がありません（Contents を Read and write に）。');
-    if (res.status === 404) throw new Error('GitHubのユーザー名かリポジトリ名が違います。');
+    if (res.status === 404) throw new Error('GitHubでリポジトリが見つかりません。「設定」で ①ユーザー名（nextpictures）とリポジトリ名（最後の「-」まで）が正しいか、②トークンを作るときにこのリポジトリを選び、Contents を「Read and write」にしたか を確かめてください。');
     if (res.status === 409) throw new Error('ほかの人が同時に更新しました。少し待ってからもう一度押してください。');
     throw new Error('GitHubに保存できませんでした（' + res.status + ' ' + m + '）');
   }
@@ -275,14 +275,14 @@ $('#s-umode').addEventListener('change', umodeView);
 $('#settingsBtn').addEventListener('click', openSettings);
 $$('[data-close]').forEach(b => b.addEventListener('click', () => b.closest('dialog').close()));
 function storeSettings() {
-  ls.set('tp_gh_owner', $('#s-owner').value.trim()); ls.set('tp_gh_repo', $('#s-repo').value.trim()); ls.set('tp_gh_branch', $('#s-branch').value.trim() || 'main'); ls.set('tp_gh_token', $('#s-token').value.trim());
+  ls.set('tp_gh_owner', $('#s-owner').value.trim()); ls.set('tp_gh_repo', $('#s-repo').value.trim().replace(/^https?:\/\/github\.com\/[^/]+\//, '').replace(/\.git$/, '').replace(/\/+$/, '')); ls.set('tp_gh_branch', $('#s-branch').value.trim() || 'main'); ls.set('tp_gh_token', $('#s-token').value.trim());
   ls.set('tp_um_mode', $('#s-umode').value); ls.set('tp_um_api', $('#s-uapi').value.trim()); ls.set('tp_um_site', $('#s-uweb').value.trim()); ls.set('tp_um_key', $('#s-ukey').value.trim());
   ls.set('tp_um_user', $('#s-uuser').value.trim()); ls.set('tp_um_pass', $('#s-upass').value); ls.set('tp_um_dash', $('#s-udash').value.trim());
   ls.set('tp_no_track', $('#s-notrack').checked ? '1' : ''); ss.set('tp_um_token', '');
 }
 $('#ghTest').addEventListener('click', async () => {
   storeSettings(); const r = $('#ghRes'); r.className = 'res'; r.textContent = '確かめています…';
-  try { if (!ghReady()) throw new Error('3つとも入れてください'); await ghReq(''); r.className = 'res ok'; r.textContent = '✓ つながりました'; }
+  try { if (!ghReady()) throw new Error('3つとも入れてください'); const info = await ghReq(''); if (info.permissions && !info.permissions.push) throw new Error('リポジトリは見えますが、書き込みの許可がありません（Contents を Read and write に）'); r.className = 'res ok'; r.textContent = '✓ つながりました'; }
   catch (e) { r.className = 'res ng'; r.textContent = e.message; }
 });
 $('#umTest').addEventListener('click', async () => {
